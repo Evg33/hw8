@@ -82,5 +82,30 @@
   - name: Ensure pkgs is present
     apt:
       name:
-       - apt
+       - docker.io
+       - python3-pip
       update_cache: yes
+
+  - name: pip docker-compose
+    pip:
+      name: docker
+
+  - name: remove container
+    docker_container:
+      name: web
+      state: absent
+
+  - name: Start a container with a command
+    docker_container:
+      name: web
+      image: evg33/hw08web:0.0.1
+      state: started
+      ports:
+       - "80:8080"
+
+  - name: Get my public IP
+    ipify_facts:
+    register: public_ip
+
+  - name: Show IP
+    debug: msg="{{ public_ip }}"
