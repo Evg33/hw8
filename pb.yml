@@ -10,9 +10,6 @@
       name:
        - docker.io
        - python3-pip
-       - screen
-       - htop
-       - mc
       update_cache: yes
 
   - name: pip docker-compose
