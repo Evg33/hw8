@@ -5,7 +5,27 @@
 
   tasks:
 
-  - name: Ensure docker pkr is present
+  - name: Ensure docker pkg is present
     apt:
       name: docker.io
       state: present
+
+#  - name: Ensure docker-compose pkg is present
+#    apt:
+#      name: docker-compose
+#      state: present
+
+  - name: git checkout
+    git:
+      repo: 'https://github.com/Evg33/test07.git'
+      dest: /tmp/test07
+
+  - name: comp
+    docker_compose:
+      project_src: flask
+      state: absent
+
+#  - name: Tear down existing services
+#    docker_compose:
+#      project_src: flask
+#      state: absent
