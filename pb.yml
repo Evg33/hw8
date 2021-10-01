@@ -37,7 +37,7 @@
   - name: Run `docker-compose up` again
     docker_compose:
       project_src: hw07
-      build: no
+      build: yes
     register: output
 
 #  - debug:
@@ -59,3 +59,28 @@
   - assert:
       that:
         - "not web.hw07_web_1.state.running"
+
+#  - name: Log into DockerHub
+#    docker_login:
+#      username: ***
+#      password: ***
+#      email: ***
+
+  - name: Tag and push to docker hub
+    docker_image:
+      name: evg33/tes07web
+      repository: evg33/hw08web:0.0.1
+      push: yes
+      source: local
+
+- name: create prod env
+  hosts: prod
+  become: yes
+
+  tasks:
+
+  - name: Ensure pkgs is present
+    apt:
+      name:
+       - apt
+      update_cache: yes
