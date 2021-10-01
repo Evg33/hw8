@@ -1,0 +1,11 @@
+---
+- name: create build env
+  hosts: build
+  become: yes
+
+  tasks:
+
+  - name: Ensure docker pkr is present
+    apt:
+      name: docker.io
+      state: present
