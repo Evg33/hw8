@@ -5,6 +5,14 @@
 
   tasks:
 
+  - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+    wait_for:
+      port: 22
+      host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+      search_regex: OpenSSH
+      delay: 10
+    connection: local
+
   - name: Ensure pkgs is present
     apt:
       name:
@@ -26,39 +34,61 @@
       project_src: hw07
       state: absent
 
-  - name: Create and start services
-    docker_compose:
-      project_src: hw07
+  - debug:
+      var: output
+
+#  - name: Create and start services
+#    docker_compose:
+#      project_src: hw07
+#      build: yes
+#      services: bldr
+#    register: output
+
+
+
+  - name: copy script
+    copy:
+      src: scr.sh
+      dest: /tmp/scr.sh
+
+  - name: Run commands
+    command: bash /tmp/scr.sh
     register: output
+
+
+
+
+
+
+
+  - debug:
+      var: output
+
+#  - name: Run `docker-compose up` again
+#    docker_compose:
+#      project_src: hw07
+#      build: yes
+#    register: output
 
 #  - debug:
 #      var: output
 
-  - name: Run `docker-compose up` again
-    docker_compose:
-      project_src: hw07
-      build: yes
-    register: output
+#  - assert:
+#      that: "not output.changed "
+
+#  - name: Stop all services
+#    docker_compose:
+#      project_src: hw07
+#      build: no
+#      stopped: yes
+#    register: output
 
 #  - debug:
 #      var: output
 
-  - assert:
-      that: "not output.changed "
-
-  - name: Stop all services
-    docker_compose:
-      project_src: hw07
-      build: no
-      stopped: yes
-    register: output
-
-#  - debug:
-#      var: output
-
-  - assert:
-      that:
-        - "not web.hw07_web_1.state.running"
+#  - assert:
+#      that:
+#        - "not web.hw07_web_1.state.running"
 
 #  - name: Log into DockerHub
 #    docker_login:
@@ -68,8 +98,8 @@
 
   - name: Tag and push to docker hub
     docker_image:
-      name: evg33/tes07web
-      repository: evg33/hw08web:0.0.1
+      name: evg33/hw07web:0.0.8
+      repository: evg33/hw08web:0.0.4
       push: yes
       source: local
 
@@ -78,6 +108,14 @@
   become: yes
 
   tasks:
+
+  - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+    wait_for:
+      port: 22
+      host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+      search_regex: OpenSSH
+      delay: 10
+    connection: local
 
   - name: Ensure pkgs is present
     apt:
@@ -90,22 +128,32 @@
     pip:
       name: docker
 
-  - name: remove container
-    docker_container:
-      name: web
-      state: absent
+#  - name: stop container
+#    docker_container:
+##      name: hw08web:0.0.1
+#      name: evg33/test07web
+#      state: stopped
 
-  - name: Start a container with a command
+#  - name: remove container
+#    docker_container:
+##      name: hw08web:0.0.1
+#      name: evg33/test07web
+#      state: absent
+
+  - name: Start container
     docker_container:
       name: web
-      image: evg33/hw08web:0.0.1
+      image: evg33/hw08web:0.0.4
       state: started
       ports:
        - "80:8080"
+      auto_remove: yes
+      pull: yes
+      recreate: yes
 
   - name: Get my public IP
     ipify_facts:
     register: public_ip
 
-  - name: Show IP
-    debug: msg="{{ public_ip }}"
+  - name: Show url
+    debug: msg="    http://{{ hostvars[inventory_hostname]['ipify_public_ip'] }}/hello-1.0    "
