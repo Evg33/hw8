@@ -37,44 +37,30 @@
   - debug:
       var: output
 
-#  - name: Create and start services
-#    docker_compose:
-#      project_src: hw07
-#      build: yes
-#      services: bldr
-#    register: output
-
-
-
-  - name: copy script
-    copy:
-      src: scr.sh
-      dest: /tmp/scr.sh
-
-  - name: Run commands
-    command: bash /tmp/scr.sh
+  - name: Run docker-compose run bldr
+    command: bash -c "cd hw07 && docker-compose run bldr"
     register: output
-
-
-
-
-
-
 
   - debug:
       var: output
 
-#  - name: Run `docker-compose up` again
+  - name: Run docker-compose build web
+    command: bash -c "cd hw07 && docker-compose build web"
+    register: output
+
+  - debug:
+      var: output
+
+#  - name: Create web service
 #    docker_compose:
 #      project_src: hw07
 #      build: yes
+#      services: web
+#      stopped: yes
 #    register: output
 
 #  - debug:
 #      var: output
-
-#  - assert:
-#      that: "not output.changed "
 
 #  - name: Stop all services
 #    docker_compose:
@@ -83,8 +69,8 @@
 #      stopped: yes
 #    register: output
 
-#  - debug:
-#      var: output
+  - debug:
+      var: output
 
 #  - assert:
 #      that:
@@ -127,18 +113,6 @@
   - name: pip docker-compose
     pip:
       name: docker
-
-#  - name: stop container
-#    docker_container:
-##      name: hw08web:0.0.1
-#      name: evg33/test07web
-#      state: stopped
-
-#  - name: remove container
-#    docker_container:
-##      name: hw08web:0.0.1
-#      name: evg33/test07web
-#      state: absent
 
   - name: Start container
     docker_container:
