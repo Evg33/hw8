@@ -5,14 +5,6 @@
 
   tasks:
 
-  - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
-    wait_for:
-      port: 22
-      host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
-      search_regex: OpenSSH
-      delay: 10
-    connection: local
-
   - name: Ensure pkgs is present
     apt:
       name:
@@ -51,30 +43,8 @@
   - debug:
       var: output
 
-#  - name: Create web service
-#    docker_compose:
-#      project_src: hw07
-#      build: yes
-#      services: web
-#      stopped: yes
-#    register: output
-
-#  - debug:
-#      var: output
-
-#  - name: Stop all services
-#    docker_compose:
-#      project_src: hw07
-#      build: no
-#      stopped: yes
-#    register: output
-
   - debug:
       var: output
-
-#  - assert:
-#      that:
-#        - "not web.hw07_web_1.state.running"
 
 #  - name: Log into DockerHub
 #    docker_login:
@@ -94,14 +64,6 @@
   become: yes
 
   tasks:
-
-  - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
-    wait_for:
-      port: 22
-      host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
-      search_regex: OpenSSH
-      delay: 10
-    connection: local
 
   - name: Ensure pkgs is present
     apt:
