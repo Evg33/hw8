@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: create build env
   hosts: build
@@ -7,10 +8,9 @@
 
   - name: Ensure pkgs is present
     apt:
-      name:
-       - docker.io
-       - python3-pip
+      name: [docker.io, python3-pip]
       update_cache: yes
+      cache_valid_time: 3600
 
   - name: pip docker-compose
     pip:
@@ -43,10 +43,7 @@
   - debug:
       var: output
 
-  - debug:
-      var: output
-
-#  - name: Log into DockerHub
+#  - name: DockerHub Login
 #    docker_login:
 #      username: ***
 #      password: ***
@@ -67,10 +64,9 @@
 
   - name: Ensure pkgs is present
     apt:
-      name:
-       - docker.io
-       - python3-pip
+      name: [docker.io, python3-pip]
       update_cache: yes
+      cache_valid_time: 3600
 
   - name: pip docker-compose
     pip:
