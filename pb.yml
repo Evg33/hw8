@@ -4,6 +4,9 @@
   hosts: build
   become: yes
 
+  vars_files:
+    - secrets.yml
+
   tasks:
 
   - name: Ensure pkgs is present
@@ -45,9 +48,9 @@
 
 #  - name: DockerHub Login
 #    docker_login:
-#      username: ***
-#      password: ***
-#      email: ***
+#      username: "{{ dhlogin }}"
+#      password: "{{ dhpass }}"
+#      email: "{{ dhemail }}"
 
   - name: Tag and push to docker hub
     docker_image:
