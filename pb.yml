@@ -69,16 +69,16 @@
       stopped: yes
     register: output
 
-#  - name: DockerHub Login
-#    docker_login:
-#      username: "{{ dhlogin }}"
-#      password: "{{ dhpass }}"
-#      email: "{{ dhemail }}"
+  - name: DockerHub Login
+    docker_login:
+      username: "{{ dhlogin }}"
+      password: "{{ dhpass }}"
+      email: "{{ dhemail }}"
 
   - name: Tag and push to docker hub
     docker_image:
       name: evg33/hw07web:0.0.8
-      repository: evg33/hw08web:0.0.4
+      repository: evg33/hw08web:0.0.5
       push: yes
       source: local
 
@@ -101,7 +101,7 @@
   - name: Start container
     docker_container:
       name: web
-      image: evg33/hw08web:0.0.4
+      image: evg33/hw08web:0.0.5
       state: started
       ports:
        - "80:8080"
