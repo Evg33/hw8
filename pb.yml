@@ -32,19 +32,42 @@
   - debug:
       var: output
 
-  - name: Run docker-compose run bldr
-    command: bash -c "cd hw07 && docker-compose run bldr"
+  - name: Remove old war file
+    file:
+      path: hw07/web/src/hello-1.0.war
+      state: absent
+
+  - name: Build war file
+    docker_compose:
+      project_src: hw07
+      build: yes
+      services: bldr
     register: output
 
   - debug:
       var: output
 
-  - name: Run docker-compose build web
-    command: bash -c "cd hw07 && docker-compose build web"
+  - name: Wait until the war file is present before continuing
+    wait_for:
+      path: hw07/web/src/hello-1.0.war
+
+  - name: Build web service
+    docker_compose:
+      project_src: hw07
+      build: yes
+      services: web
+      stopped: yes
     register: output
 
   - debug:
       var: output
+
+  - name: Stop all services
+    docker_compose:
+      project_src: hw07
+      build: no
+      stopped: yes
+    register: output
 
 #  - name: DockerHub Login
 #    docker_login:
